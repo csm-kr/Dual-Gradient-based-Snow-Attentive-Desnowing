@@ -103,7 +103,7 @@ class DualGradLoss(nn.Module):
         # between edge
         l5 = mask_edge_refine_loss = self.l1_loss(pred_edge, gt_edge)                   # edge 끼리
 
-        l2 *= 0.1
+        # l2 *= 0.1
         loss = l1 + l2 + l3 + l4 + l5
 
         return loss, (l1, l2, l3, l4, l5)

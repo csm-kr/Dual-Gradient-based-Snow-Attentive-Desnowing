@@ -60,11 +60,13 @@ class SRRS_Dataset(Dataset):
             return len(self.snow_names)
         return self.iteration
 
-    def __getitem__(self, _):
-        i = np.random.randint(0, len(self.snow_names) - 1)
+    def __getitem__(self, index):
+
+        if self.split == 'train':
+            index = random.randint(0, len(self.snow_names) - 1)
 
         # Snow ---------------------------------------------------------------------------------------------------------
-        snow_name, snow_gt_name, mask_gt_name = self.snow_names[i], self.snow_gt_names[i], self.mask_gt_names[i]
+        snow_name, snow_gt_name, mask_gt_name = self.snow_names[index], self.snow_gt_names[index], self.mask_gt_names[index]
 
         snow_image = Image.open(os.path.join(self.syn_paths, snow_name))
         gt_desnow = Image.open(os.path.join(self.snow_gt_paths, snow_gt_name))
@@ -118,13 +120,15 @@ class SRRS_Dataset(Dataset):
 
 
 if __name__ == '__main__':
-    dataset = SRRS_Dataset(split='train')
-    for k in dataset:
-        print(k[2].size())
+    # dataset = SRRS_Dataset(split='train')
+    # for k in dataset:
+    #     print(k[2].size())
 
     NUM_STEPS = 200000
     batch_size = 2
-    dataset = SRRS_Dataset(root='D:\data\SRRS', split='train', iteration=NUM_STEPS * batch_size)
+
+    # dataset = SRRS_Dataset(root='D:\data\SRRS', split='train', iteration=NUM_STEPS * batch_size)
+    dataset = SRRS_Dataset(root='/home/cvmlserver4/Sungmin/data/Snow/SRRS', split='train', iteration=NUM_STEPS * batch_size)
     data_loader = DataLoader(dataset=dataset,
                              batch_size=batch_size,
                              shuffle=True,
@@ -133,3 +137,4 @@ if __name__ == '__main__':
 
     for data in data_loader:
         print("data_loader : ", len(data_loader))
+        print(data)

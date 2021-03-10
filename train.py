@@ -67,30 +67,43 @@ def train(vis, train_loader, test_loader, model, cls_model, criterion, optimizer
             # gt_desnow
             vis.image(img=gt_desnow[vis_batch].clamp(0, 1),
                       win='gt_desnow',
-                      opts=dict(title='gt_desnow'))
+                      opts=dict(title='gt_desnow',
+                                width=240,
+                                height=240))
 
             # pred_desnow
             vis.image(img=pred_desnow[vis_batch].clamp(0, 1),
                       win='pred_desnow',
-                      opts=dict(title='pred_desnow'))
+                      opts=dict(title='pred_desnow',
+                                width=240,
+                                height=240))
 
             # gt_mask
             vis.image(img=gt_mask[vis_batch].squeeze().clamp(0, 1),
                       win='gt_mask',
-                      opts=dict(title='gt_mask'))
+                      opts=dict(title='gt_mask',
+                                width=240,
+                                height=240
+                                ))
 
             # pred_mask
             vis.image(img=pred_mask[vis_batch].squeeze().clamp(0, 1),
                       win='pred_mask',
-                      opts=dict(title='pred_mask'))
+                      opts=dict(title='pred_mask',
+                                width=240,
+                                height=240
+                                ))
 
             # grad_masks
             vis.image(img=grad_mask[vis_batch].squeeze().clamp(0, 1),
                       win='grad_masks',
-                      opts=dict(title='grad_masks'))
+                      opts=dict(title='grad_masks',
+                                width=240,
+                                height=240
+                                ))
 
-            # 50000 이상만 psnr 구한다.
-            if idx > 200 and idx % opts.vis_step == 0:
+            # 200000 이상만 psnr 구한다.
+            if idx > 200000 and idx % opts.vis_step == 0:
 
                 psnr, ssim = val(idx, model, cls_model, test_loader)
                 if best_psnr < psnr:

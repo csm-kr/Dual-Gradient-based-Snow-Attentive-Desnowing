@@ -1,12 +1,19 @@
 # data
 data/
 
-# train & test
+# vscode setting
+.vscode
+
+# download
+*.tmp
+
+# train
+models/
+voc/
 save/
 saves/
 logs/
 pred/
-models/
 gt/
 results/
 .cache_dir/
