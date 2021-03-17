@@ -9,7 +9,6 @@ from model import Dual_Grad_Desnow_Net, VGG
 from utils import to_ssim, to_psnr, tensor2im, save_image
 from gradient_sam import create_gradient_masks
 
-from collections import OrderedDict
 
 def test(data_loader, model, cls_model, opts):
     """
@@ -72,10 +71,10 @@ if __name__ == '__main__':
 
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--epoch', type=int, default=0)
-    parser.add_argument('--data_type', type=str, default='snow100k', help='choose snow100k or srrs')
-    parser.add_argument('--root', type=str, default='D:\data\Snow_100k')
-    # parser.add_argument('--root', type=str, default='D:\data\SRRS')
+    # FIXME
+    parser.add_argument('--data_type', type=str, default='srrs', help='choose snow100k or srrs')
+    # parser.add_argument('--root', type=str, default='D:\data\Snow_100k')
+    parser.add_argument('--root', type=str, default='D:\data\SRRS')
     # parser.add_argument('--root', type=str, default='/home/cvmlserver5/Sungmin/data/Snow_100k')
 
     test_opts = parser.parse_args()
