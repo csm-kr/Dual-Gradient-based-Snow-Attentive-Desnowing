@@ -25,24 +25,10 @@ def demo(data_path, model, cls_model, opts):
 
     img_list = os.listdir(data_path)
 
-    if opts.data_type == 'snow100k':
+    state_dict = torch.load('./models/{}_model_params.pth.tar'.format(opts.data_type), map_location=device)
+    cls_state_dict = torch.load('./models/{}_classification_vgg_16.pth.tar'.format(opts.data_type), map_location=device)
 
-        # snow100k weight
-        if opts.eval_type == 's':
-            state_dict = torch.load(os.path.join(opts.save_path, opts.save_file_name) + '.{}.{}.pth.tar'.format(opts.eval_type, opts.ssim), map_location=device)
-        elif opts.eval_type == 'p':
-            state_dict = torch.load(os.path.join(opts.save_path, opts.save_file_name) + '.{}.{}.pth.tar'.format(opts.eval_type, opts.psnr), map_location=device)
-        cls_state_dict = torch.load('./models/snow100k_classification_vgg_16.pth', map_location=device)
-    elif opts.data_type == 'srrs':
-        # srrs weight
-        if opts.eval_type == 's':
-            state_dict = torch.load(os.path.join(opts.save_path, opts.save_file_name) + '.{}.{}.pth.tar'.format(opts.eval_type, opts.ssim), map_location=device)
-        elif opts.eval_type == 'p':
-            state_dict = torch.load(os.path.join(opts.save_path, opts.save_file_name) + '.{}.{}.pth.tar'.format(opts.eval_type, opts.psnr), map_location=device)
-        cls_state_dict = torch.load('./models/srrs_classification_vgg_16.pth', map_location=device)
-
-    # state_dict = torch.load('./models/snow100k_model_params.pth', map_location=device)
-    model.load_state_dict(state_dict, strict=False)
+    model.load_state_dict(state_dict, strict=True)
     model.eval()
     cls_model.load_state_dict(cls_state_dict, strict=True)
     cls_model.eval()
@@ -81,18 +67,12 @@ if __name__ == '__main__':
     # demo path FIXME
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--save_path', type=str, default='./saves')
-    parser.add_argument('--save_file_name', type=str, default='DualGradDeSnow')
-    parser.add_argument('--data_type', type=str, default='snow100k')                  # FIXME
-    parser.add_argument('--eval_type', type=str, default='s')                         # FIXME
-    parser.add_argument('--ssim', type=float, default='0.8965')                       # FIXME
-    parser.add_argument('--psnr', type=float, default='29.0602')                       # FIXME
-    parser.add_argument('--demo_path', type=str, default='./real_snow_img')           # FIXME
+    parser.add_argument('--data_type', type=str, default='snow100k', help='srrs or snow100k')  # FIXME
+    parser.add_argument('--demo_path', type=str, default='./real_snow_img')                    # FIXME
     demo_opts = parser.parse_args()
 
     # model
     model = Dual_Grad_Desnow_Net().to(device)
-    model = torch.nn.DataParallel(model, device_ids)
     cls_model = VGG().to(device)
 
     # test

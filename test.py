@@ -9,6 +9,7 @@ from model import Dual_Grad_Desnow_Net, VGG
 from utils import to_ssim, to_psnr, tensor2im, save_image
 from gradient_sam import create_gradient_masks
 
+from collections import OrderedDict
 
 def test(data_loader, model, cls_model, opts):
     """
@@ -23,37 +24,10 @@ def test(data_loader, model, cls_model, opts):
     tic = time.time()
     print('Test...')
 
-    if opts.data_type == 'snow100k':
+    state_dict = torch.load('./models/{}_model_params.pth.tar'.format(opts.data_type), map_location=device)
+    cls_state_dict = torch.load('./models/{}_classification_vgg_16.pth.tar'.format(opts.data_type), map_location=device)
 
-    #     # snow100k weight
-    #     if opts.eval_type == 's':
-    #         state_dict = torch.load(
-    #             os.path.join(opts.save_path, opts.save_file_name) + '.{}.{:.4f}.pth.tar'.format(opts.eval_type, opts.ssim),
-    #             map_location=device)
-    #     elif opts.eval_type == 'p':
-    #         state_dict = torch.load(
-    #             os.path.join(opts.save_path, opts.save_file_name) + '.{}.{:.4f}.pth.tar'.format(opts.eval_type, opts.psnr),
-    #             map_location=device)
-
-        state_dict = torch.load('./models/snow100k_model_params.pth.tar', map_location=device)
-        cls_state_dict = torch.load('./models/snow100k_classification_vgg_16.pth.tar', map_location=device)
-
-    elif opts.data_type == 'srrs':
-
-        # # srrs weight
-        # if opts.eval_type == 's':
-        #     state_dict = torch.load(
-        #         os.path.join(opts.save_path, opts.save_file_name) + '.{}.{}.pth.tar'.format(opts.eval_type, opts.ssim),
-        #         map_location=device)
-        # elif opts.eval_type == 'p':
-        #     state_dict = torch.load(
-        #         os.path.join(opts.save_path, opts.save_file_name) + '.{}.{}.pth.tar'.format(opts.eval_type, opts.psnr),
-        #         map_location=device)
-
-        state_dict = torch.load('./models/srrs_model_params.pth.tar', map_location=device)
-        cls_state_dict = torch.load('./models/srrs_classification_vgg_16.pth.tar', map_location=device)
-
-    model.load_state_dict(state_dict, strict=False)
+    model.load_state_dict(state_dict, strict=True)
     model.eval()
     cls_model.load_state_dict(cls_state_dict, strict=True)
     cls_model.eval()
@@ -100,14 +74,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--epoch', type=int, default=0)
     parser.add_argument('--data_type', type=str, default='snow100k', help='choose snow100k or srrs')
-    # parser.add_argument('--root', type=str, default='D:\data\Snow_100k')
+    parser.add_argument('--root', type=str, default='D:\data\Snow_100k')
     # parser.add_argument('--root', type=str, default='D:\data\SRRS')
-    parser.add_argument('--root', type=str, default='/home/cvmlserver5/Sungmin/data/Snow_100k')
-    parser.add_argument('--save_path', type=str, default='./saves')
-    parser.add_argument('--save_file_name', type=str, default='DualGradDeSnow2')       # FIXME
-    parser.add_argument('--eval_type', type=str, default='p')                         # FIXME
-    parser.add_argument('--psnr', type=float, default=29.0635)                        # FIXME
-    parser.add_argument('--ssim', type=float, default=0.8959)                         # FIXME
+    # parser.add_argument('--root', type=str, default='/home/cvmlserver5/Sungmin/data/Snow_100k')
+
     test_opts = parser.parse_args()
     print(test_opts)
 
@@ -123,7 +93,6 @@ if __name__ == '__main__':
 
     # model
     model = Dual_Grad_Desnow_Net().to(device)
-    # model = torch.nn.DataParallel(model, device_ids=device_ids)
     cls_model = VGG().to(device)
 
     # test
