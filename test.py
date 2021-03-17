@@ -34,7 +34,7 @@ def test(data_loader, model, cls_model, opts):
     psnr_list = []
     ssim_list = []
 
-    for idx, (snow_images, gt_images, img_name) in enumerate(data_loader):
+    for idx, (snow_images, gt_images, _) in enumerate(data_loader):
 
         # ------------------- cuda -------------------
         snow_images = snow_images.to(device)
@@ -47,14 +47,6 @@ def test(data_loader, model, cls_model, opts):
         desnow = output[0]
         psnr_list.extend(to_psnr(desnow, gt_images))
         ssim_list.extend(to_ssim(desnow, gt_images))
-
-        # -------------------- save ------------------------
-        save = False
-        if save:
-            if not os.path.isdir('./test'):
-                os.mkdir('./test')
-            desnow = tensor2im(desnow)
-            save_image(desnow, './test/' + 'desnow_' + img_name[0] + '.png')  # for img_name is tuple
 
         # -------------------- print ------------------------
         toc = time.time()

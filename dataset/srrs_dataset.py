@@ -87,11 +87,6 @@ class SRRS_Dataset(Dataset):
             torch.manual_seed(seed)
             gt_mask = self.transform(gt_mask)
 
-        else:
-            snow_image = snow_image
-            gt_desnow = gt_desnow
-            gt_mask = gt_mask
-
         snow_image = F.to_tensor(snow_image)
         gt_desnow = F.to_tensor(gt_desnow)
         gt_mask = F.to_tensor(F.to_grayscale(gt_mask))
