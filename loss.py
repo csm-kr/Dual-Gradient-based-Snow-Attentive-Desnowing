@@ -82,7 +82,7 @@ class DualGradLoss(nn.Module):
         self.content_loss = ContentLoss().to(device)
         self.get_edge = Get_gradient().to(device)
 
-    def forward(self, pred_desnow, pred_mask, pred_edge, gt_desnow, gt_mask):
+    def forward(self, pred_desnow, gt_desnow, gt_mask, pred_mask=None, pred_edge=None):
 
         # get_edge
         gt_edge = self.get_edge(gt_mask)
@@ -91,21 +91,23 @@ class DualGradLoss(nn.Module):
         edge_of_pred_desnow = self.get_edge(pred_desnow)
 
         # between desnow
-        l1 = reconstruction_loss = self.l1_loss(pred_desnow, gt_desnow)                 # desnow 끼리
+        reconstruction_loss = self.l1_loss(pred_desnow, gt_desnow)                 # desnow 끼리
+        l1 = reconstruction_loss * 10
+
         l2 = perceptual_loss = self.content_loss(pred_desnow, gt_desnow)                # desnow 끼리
 
         # between edge of desnow
         l3 = edge_loss = self.l1_loss(edge_of_pred_desnow, edge_of_gt_desnow)           # desnow의 edge 끼리
 
         # between masks
-        l4 = snow_mask_loss = self.l1_loss(pred_mask, gt_mask)                          # mask 끼리
+        snow_mask_loss = self.l1_loss(pred_mask, gt_mask)                          # mask 끼리
+        l4 = snow_mask_loss * 10
 
         # between edge
-        l5 = mask_edge_refine_loss = self.l1_loss(pred_edge, gt_edge)                   # edge 끼리
+        mask_edge_refine_loss = self.l1_loss(pred_edge, gt_edge)                   # edge 끼리
+        l5 = mask_edge_refine_loss * 10
 
-        # l2 *= 0.1
         loss = l1 + l2 + l3 + l4 + l5
-
         return loss, (l1, l2, l3, l4, l5)
 
 

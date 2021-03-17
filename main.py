@@ -1,15 +1,16 @@
-import os
 import sys
+
 import torch
+import torch.optim as optim
 import visdom
+from torch.optim import lr_scheduler
+from torch.utils.data import DataLoader
+
 from config import parse, device, device_ids
 from dataset.Snow100K_dataset import Snow100K_Dataset
 from dataset.srrs_dataset import SRRS_Dataset
-from torch.utils.data import DataLoader
-from model import Dual_Grad_Desnow_Net, VGG
 from loss import DualGradLoss
-from torch.optim import lr_scheduler
-import torch.optim as optim
+from model import Dual_Grad_Desnow_Net, VGG
 from train import train
 
 
@@ -56,12 +57,12 @@ def main():
 
     if opts.data_type == 'snow100k':
         # snow100k cls weight
-        cls_state_dict = torch.load('./models/snow100k_classification_vgg_16.pth', map_location=device)
+        cls_state_dict = torch.load('./models/snow100k_classification_vgg_16.pth.tar', map_location=device)
         cls_model.load_state_dict(cls_state_dict, strict=True)
 
     elif opts.data_type == 'srrs':
         # srrs cls weight
-        cls_state_dict = torch.load('./models/srrs_classification_vgg_16.pth', map_location=device)
+        cls_state_dict = torch.load('./models/srrs_classification_vgg_16.pth.tar', map_location=device)
         cls_model.load_state_dict(cls_state_dict, strict=True)
 
     cls_model.eval()

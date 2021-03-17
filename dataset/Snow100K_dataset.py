@@ -128,19 +128,20 @@ class Snow100K_Dataset(Dataset):
         gt_desnow = Image.open(self.gt_paths[index]).convert('RGB')
         gt_mask = Image.open(self.mask_paths[index])
 
-        # 같은 RandomResizedCrop 등을 연산하려고
-        seed = np.random.randint(2021)
-        random.seed(seed)
-        torch.manual_seed(seed)
-        snow_image = self.transform(snow_image)
+        if self.split == 'train':
+            # 같은 RandomResizedCrop 등을 연산하려고
+            seed = np.random.randint(2021)
+            random.seed(seed)
+            torch.manual_seed(seed)
+            snow_image = self.transform(snow_image)
 
-        random.seed(seed)
-        torch.manual_seed(seed)
-        gt_desnow = self.transform(gt_desnow)
+            random.seed(seed)
+            torch.manual_seed(seed)
+            gt_desnow = self.transform(gt_desnow)
 
-        random.seed(seed)
-        torch.manual_seed(seed)
-        gt_mask = self.transform(gt_mask)
+            random.seed(seed)
+            torch.manual_seed(seed)
+            gt_mask = self.transform(gt_mask)
 
         snow_image = F.to_tensor(snow_image)
         gt_desnow = F.to_tensor(gt_desnow)
@@ -179,7 +180,8 @@ if __name__ == '__main__':
     NUM_STEPS = 200000
     batch_size = 2
     num_sample = 50000
-    dataset = Snow100K_Dataset(root='D:\data\Snow_100k', split='train', iteration=NUM_STEPS * batch_size, num_sample=num_sample)
+    # dataset = Snow100K_Dataset(root='D:\data\Snow_100k', split='train', iteration=NUM_STEPS * batch_size, num_sample=num_sample)
+    dataset = Snow100K_Dataset(root='/home/cvmlserver4/Sungmin/data/Snow_100k', split='train', iteration=NUM_STEPS * batch_size, num_sample=num_sample)
     data_loader = DataLoader(dataset=dataset,
                              batch_size=batch_size,
                              shuffle=True,

@@ -48,7 +48,6 @@ class SRRS_Dataset(Dataset):
             self.mask_gt_names = self.snow_gt_names = [snow_name.replace('.tif', '.jpg') for snow_name in self.snow_names]
 
         # self.num_samples = num_samples
-
         self.transform = transforms.Compose([
             transforms.RandomResizedCrop((240, 240), interpolation=Image.BICUBIC),
             transforms.RandomHorizontalFlip(0.5),
@@ -73,18 +72,25 @@ class SRRS_Dataset(Dataset):
         gt_mask = Image.open(os.path.join(self.mask_gt_paths, mask_gt_name))
 
         # --------------------------------------------------------------------------------------------------------------
-        seed = np.random.randint(2021)
-        random.seed(seed)
-        torch.manual_seed(seed)
-        snow_image = self.transform(snow_image)
+        if self.split == 'train':
 
-        random.seed(seed)
-        torch.manual_seed(seed)
-        gt_desnow = self.transform(gt_desnow)
+            seed = np.random.randint(2021)
+            random.seed(seed)
+            torch.manual_seed(seed)
+            snow_image = self.transform(snow_image)
 
-        random.seed(seed)
-        torch.manual_seed(seed)
-        gt_mask = self.transform(gt_mask)
+            random.seed(seed)
+            torch.manual_seed(seed)
+            gt_desnow = self.transform(gt_desnow)
+
+            random.seed(seed)
+            torch.manual_seed(seed)
+            gt_mask = self.transform(gt_mask)
+
+        else:
+            snow_image = snow_image
+            gt_desnow = gt_desnow
+            gt_mask = gt_mask
 
         snow_image = F.to_tensor(snow_image)
         gt_desnow = F.to_tensor(gt_desnow)

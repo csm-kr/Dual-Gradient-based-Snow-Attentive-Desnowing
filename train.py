@@ -12,6 +12,8 @@ def train(vis, train_loader, test_loader, model, cls_model, criterion, optimizer
     print('Training...')
 
     best_psnr = 0
+    best_ssim = 0
+
     for idx, (snow_images, gt_desnow, gt_mask) in enumerate(train_loader):
 
         # ------------------- cuda -------------------
@@ -30,7 +32,14 @@ def train(vis, train_loader, test_loader, model, cls_model, criterion, optimizer
         pred_edge = output[2]
 
         # ------------------- backward -------------------
-        loss, (l1, l2, l3, l4, l5) = criterion(pred_desnow, pred_mask, pred_edge, gt_desnow, gt_mask)
+        loss, losses = criterion(pred_desnow=pred_desnow,
+                                 gt_desnow=gt_desnow,
+                                 gt_mask=gt_mask,
+                                 pred_mask=pred_mask,
+                                 pred_edge=pred_edge)
+
+        (l1, l2, l3, l4, l5) = losses
+
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -42,8 +51,20 @@ def train(vis, train_loader, test_loader, model, cls_model, criterion, optimizer
         # -------------------- print ------------------------
         toc = time.time()
 
+        for param_group in optimizer.param_groups:
+            lr = param_group['lr']
+
         if idx % opts.vis_step == 0:
             print(str(idx) + '/' + str(len(train_loader)) + ', it takes {:.4f} sec'.format(toc - tic))
+
+            print('Step: [{0}/{1}]\t'
+                  'Loss: {loss:.4f}\t'
+                  'Learning rate: {lr:.7f} s \t'
+                  'Time : {time:.4f}\t'
+                  .format(idx, len(train_loader),
+                          loss=loss,
+                          lr=lr,
+                          time=toc - tic))
 
             # -------------------- loss plot ------------------------
             vis.line(X=torch.ones((1, 6)).cpu() * idx,  # step
@@ -102,26 +123,37 @@ def train(vis, train_loader, test_loader, model, cls_model, criterion, optimizer
                                 height=240
                                 ))
 
-            # 200000 이상만 psnr 구한다.
-            if idx > 200000 and idx % opts.vis_step == 0:
+        # 200000 이상만 psnr 구한다.
+        if idx > opts.eval_start_step and idx % opts.vis_step == 0:
 
-                psnr, ssim = val(idx, model, cls_model, test_loader)
-                if best_psnr < psnr:
-                    best_psnr = psnr
-                    print("Best psnr : {:.4f}".format(best_psnr))
-                    if not os.path.exists(opts.save_path):
-                        os.mkdir(opts.save_path)
-                    torch.save(model.state_dict(), os.path.join(opts.save_path, opts.save_file_name + '.{:.4f}.pth.tar'.format(best_psnr)))
+            psnr, ssim = val(idx, model, cls_model, test_loader)
 
-                # -------------------- evaluation plot ------------------------
-                vis.line(X=torch.ones((1, 2)).cpu() * idx,  # step
-                         Y=torch.Tensor([psnr, ssim]).unsqueeze(0).cpu(),
-                         win='val_psnr/ssim',
-                         update='append',
-                         opts=dict(xlabel='step',
-                                   ylabel='value',
-                                   title='val_psnr/ssim',
-                                   legend=['psnr', 'ssim']))
+            if best_psnr < psnr:
+                best_psnr = psnr
+                print("Best psnr : {:.4f}".format(best_psnr))
+                if not os.path.exists(opts.save_path):
+                    os.mkdir(opts.save_path)
+                torch.save(model.module.state_dict(),
+                           os.path.join(opts.save_path, opts.save_file_name + '.p.{:.4f}.pth.tar'.format(best_psnr)))
+
+            if best_ssim < ssim:
+                best_ssim = ssim
+                print("Best ssim : {:.4f}".format(best_ssim))
+
+                if not os.path.exists(opts.save_path):
+                    os.mkdir(opts.save_path)
+                torch.save(model.module.state_dict(),
+                           os.path.join(opts.save_path, opts.save_file_name + '.s.{:.4f}.pth.tar'.format(best_ssim)))
+
+            # -------------------- evaluation plot ------------------------
+            vis.line(X=torch.ones((1, 2)).cpu() * idx,  # step
+                     Y=torch.Tensor([psnr, ssim]).unsqueeze(0).cpu(),
+                     win='val_psnr/ssim',
+                     update='append',
+                     opts=dict(xlabel='step',
+                               ylabel='value',
+                               title='val_psnr/ssim',
+                               legend=['psnr', 'ssim']))
 
 
 def val(iter, model, cls_model, test_loader):

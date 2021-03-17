@@ -10,9 +10,10 @@ def parse(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('--iteration', type=int, default=300000)
     parser.add_argument('--port', type=str, default='2004')
-    parser.add_argument('--lr', type=float, default=1e-4)
+    parser.add_argument('--lr', type=float, default=2e-4)
+    parser.add_argument('--eval_start_step', type=int, default=50000)
     parser.add_argument('--weight_decay', type=float, default=1e-4)
-    parser.add_argument('--batch_size', type=int, default=2)
+    parser.add_argument('--batch_size', type=int, default=4)
     parser.add_argument('--vis_step', type=int, default=10)
 
     parser.add_argument('--save_path', type=str, default='./saves')
@@ -22,10 +23,9 @@ def parse(args):
     # parser.add_argument('--root', type=str, default='D:\data\Snow_100k')
     # parser.add_argument('--root', type=str, default='D:\data\SRRS')
     # parser.add_argument('--root', type=str, default='/home/cvmlserver3/Sungmin/data/Snow_100k')
-    # parser.add_argument('--root', type=str, default='/home/cvmlserver4/Sungmin/data/SRRS')
     parser.add_argument('--root', type=str, default='/home/cvmlserver4/Sungmin/data/Snow/SRRS')
 
-    parser.add_argument('--data_type', type=str, default='srrs', help='snow100k or srrs')                 # FIXME
+    parser.add_argument('--data_type', type=str, default='srrs', help='snow100k or srrs')               # FIXME
 
     parser.set_defaults(visualization=False)
     parser.add_argument('--vis', dest='visualization', action='store_true')
