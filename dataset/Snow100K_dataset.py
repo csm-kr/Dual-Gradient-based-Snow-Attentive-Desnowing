@@ -16,7 +16,7 @@ def bar_custom(current, total, width=0):
     return progress
 
 
-def download_snow100k_dataset(root="D:\data\Snow_100k", remove_compressed_file=True):
+def download_snow100k_dataset(root="D:\data\Snow100K", remove_compressed_file=True):
     """
 
     """
@@ -180,8 +180,8 @@ if __name__ == '__main__':
     NUM_STEPS = 200000
     batch_size = 2
     num_sample = 50000
-    # dataset = Snow100K_Dataset(root='D:\data\Snow_100k', split='train', iteration=NUM_STEPS * batch_size, num_sample=num_sample)
-    dataset = Snow100K_Dataset(root='/home/cvmlserver4/Sungmin/data/Snow_100k', split='train', iteration=NUM_STEPS * batch_size, num_sample=num_sample)
+    dataset = Snow100K_Dataset(root='D:\data\Snow100K', split='train', iteration=NUM_STEPS * batch_size, num_sample=num_sample)
+    # dataset = Snow100K_Dataset(root='/home/cvmlserver4/Sungmin/data/Snow_100k', split='train', iteration=NUM_STEPS * batch_size, num_sample=num_sample)
     data_loader = DataLoader(dataset=dataset,
                              batch_size=batch_size,
                              shuffle=True,

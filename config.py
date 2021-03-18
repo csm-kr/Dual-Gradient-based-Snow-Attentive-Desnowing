@@ -22,7 +22,7 @@ def parse(args):
     # FIXME choose your dataset root
     parser.add_argument('--root', type=str, default='D:\data\Snow100K')
     # parser.add_argument('--root', type=str, default='D:\data\SRRS')
-    # parser.add_argument('--root', type=str, default='/home/cvmlserver3/Sungmin/data/Snow_100k')
+    # parser.add_argument('--root', type=str, default='/home/cvmlserver3/Sungmin/data/Snow100K')
     # parser.add_argument('--root', type=str, default='/home/cvmlserver4/Sungmin/data/Snow/SRRS')
 
     parser.add_argument('--data_type', type=str, default='snow100k', help='snow100k or srrs')               # FIXME

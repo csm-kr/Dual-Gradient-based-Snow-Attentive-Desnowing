@@ -1,41 +1,9 @@
 import pytorch_ssim
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
-from torchvision.models import vgg19, vgg19_bn, vgg16
-from config import device
 from math import log10
 from PIL import Image
 import numpy as np
-
-
-# --- Perceptual loss network  --- #
-class ContentLoss(nn.Module):
-
-    def __init__(self):
-        super(ContentLoss, self).__init__()
-
-        vgg = vgg19(pretrained=True).to(device)
-        self.loss_network = nn.Sequential(*list(vgg.features)[:22]).eval()
-        for param in self.loss_network.parameters():
-            param.requires_grad = False
-
-        self.l1_loss = nn.L1Loss()
-
-    def normalize_batch(self, batch):
-        # Normalize batch using ImageNet mean and std
-        mean = batch.new_tensor([0.485, 0.456, 0.406]).view(-1, 1, 1)
-        std = batch.new_tensor([0.229, 0.224, 0.225]).view(-1, 1, 1)
-        return (batch - mean) / std
-
-    def forward(self, out_images, target_images):
-
-        loss = self.l1_loss(
-            self.loss_network(self.normalize_batch(out_images)),
-            self.loss_network(self.normalize_batch(target_images))
-        )
-
-        return loss
 
 
 def to_psnr(output, gt):
