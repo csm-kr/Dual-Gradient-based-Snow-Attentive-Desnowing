@@ -66,7 +66,7 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     # FIXME
-    parser.add_argument('--data_type', type=str, default='srrs', help='srrs or snow100k')
+    parser.add_argument('--data_type', type=str, default='snow100k', help='srrs or snow100k')
     # FIXME
     parser.add_argument('--demo_path', type=str, default='./real_snow_img')
     demo_opts = parser.parse_args()
