@@ -8,6 +8,7 @@ data/
 *.tmp
 
 # train
+demo/
 models/
 voc/
 save/
