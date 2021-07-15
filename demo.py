@@ -7,6 +7,7 @@ from gradient_sam import create_gradient_masks
 from libtiff import TIFF
 from PIL import Image
 import torchvision.transforms.functional as F
+import matplotlib.pyplot as plt
 from model import Dual_Grad_Desnow_Net, VGG
 
 
@@ -54,21 +55,30 @@ def demo(data_path, model, cls_model, opts):
             output = model.eval()(snow_images, grad_masks)  # output : (a, _, _)
         desnow = output[0]
 
-        if not os.path.isdir('./demo'):
-            os.mkdir('./demo')
-        desnow = tensor2im(desnow)
-        # mask = tensor2im(mask)
-        img_name = img_name.split('.')[0]
-        save_image(desnow, './demo/' + 'desnow_' + img_name + '.jpg')  # for img_name is tuple
+        if opts.save:
+
+            if not os.path.isdir('./demo'):
+                os.mkdir('./demo')
+            desnow = tensor2im(desnow)
+            # mask = tensor2im(mask)
+            img_name = img_name.split('.')[0]
+            save_image(desnow, './demo/' + 'desnow_' + img_name + '.jpg')  # for img_name is tuple
+
+        if opts.visualization:
+            plt.figure('demo')
+            plt.imshow(desnow)
+            plt.show()
 
 
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    # FIXME
     parser.add_argument('--data_type', type=str, default='snow100k', help='srrs or snow100k')
-    # FIXME
     parser.add_argument('--demo_path', type=str, default='./real_snow_img')
+    parser.set_defaults(save=True)
+    parser.set_defaults(visualization=True)
+    parser.add_argument('--no_save', dest='save', action='store_false')
+    parser.add_argument('--no_vis', dest='visualization', action='store_false')
     demo_opts = parser.parse_args()
 
     # model

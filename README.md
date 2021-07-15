@@ -1,10 +1,8 @@
 # Dual Gradient based Snow Attentive Desnowing
 
-### TODO List
-
 :octocat:
 
-- Official code for Dual Gradient based Snow Attentive Desnowing
+- Official code for Dual Gradient based Snow Attentive Desnowing at Pytorch
  
 ### Introduction 
 
@@ -14,6 +12,9 @@
 - libtiff
 - matplotlib
 - pytorch >= 1.5.0
+- visdom
+- torchvision
+- argparse
 
 
 ### training
@@ -59,16 +60,19 @@ usage: test.py [-h] [--data_type] [--root]
 
   -h, --help            show this help message and exit
   --data_type           which dataset you want to use snow100k or srrs (default='snow100k')
-  --root                The root path that contains the dataset
+  --root                The dataset root path 
 ```
 
 - for demo
 
 ```
 # python demo.py 
-usage: demo.py [-h] [--demo_img_path] [--demo_img_type] [--save] [--visualization]
+usage: demo.py [-h] [--demo_path] [--demo_type] 
+               [--no_save] [--no_vis]
 
-  -h, --help            show this help message and exit
-  --demo_type       The path that contains the image you want to detect
-  --demo_path       The path that contains the image you want to detect (available .jpg, .png, .tif)
+  -h, --help        show this help message and exit
+  --demo_type       which dataset you trained snow100k or srrs (default='snow100k')
+  --demo_path       The path that contains the images you want to desnow (available .jpg, .png, .tif type)
+  --no_save         When you don't want to save (save as .jpg type) (default=True)
+  --no_vis          When you don't want to display (default=True)
 ```
