@@ -68,8 +68,7 @@ def main():
     cls_model.eval()
     criterion = DualGradLoss()
 
-    betas = (0.9, 0.999)
-    optimizer = optim.Adam(model.parameters(), lr=opts.lr, betas=betas, weight_decay=opts.weight_decay)
+    optimizer = optim.Adam(model.parameters(), lr=opts.lr, betas=(0.9, 0.999), weight_decay=opts.weight_decay)
     scheduler = lr_scheduler.ExponentialLR(optimizer, gamma=0.95)
 
     train(vis=vis,

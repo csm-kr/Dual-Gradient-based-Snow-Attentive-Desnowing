@@ -64,10 +64,9 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     # FIXME
-    parser.add_argument('--data_type', type=str, default='srrs', help='choose snow100k or srrs')
-    # parser.add_argument('--root', type=str, default='D:\data\Snow100K')
-    parser.add_argument('--root', type=str, default='D:\data\SRRS')
-    # parser.add_argument('--root', type=str, default='/home/cvmlserver5/Sungmin/data/Snow_100k')
+    parser.add_argument('--data_type', type=str, default='snow100k', help='choose snow100k or srrs')
+    parser.add_argument('--root', type=str, default='D:\data\Snow100K')
+    # parser.add_argument('--root', type=str, default='D:\data\SRRS')
 
     test_opts = parser.parse_args()
     print(test_opts)
