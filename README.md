@@ -1,8 +1,6 @@
 # Dual Gradient based Snow Attentive Desnowing
 
-:octocat:
-
-- Official code for Dual Gradient based Snow Attentive Desnowing at Pytorch
+:octocat: Official code for Dual Gradient based Snow Attentive Desnowing at Pytorch
  
 ### Introduction 
 
